@@ -1,69 +1,35 @@
-# Mzima Queue & Flow Optimisation
+# Mzima | Appointment and Routing Co-pilot
 
-Mzima is an agentic patient-flow co-pilot for hospital outpatient triage. It helps shift leads and outpatient department managers anticipate operational bottlenecks and make better use of the staff and triage capacity already available.
+Mzima is a prototype concept for helping patients request an early outpatient appointment and helping facility staff review where that appointment belongs. A locally hosted reasoning agent gathers structured information, checks slots and facility-approved routing guidance, and proposes a sector and priority. A named clinician must approve, edit, or reject any proposal before it can affect a booking or queue position.
 
-## The problem
+**Safety boundary:** Mzima is not a diagnostic system and does not autonomously triage, refer, raise deterioration flags, or change queue position. The five-day prototype is for synthetic cases and a simulated single-facility workflow. It is not for live care.
 
-Public hospital outpatient queues are often managed largely by arrival order, even when arrivals surge and the number of available triage staff changes during the day. Patients can accumulate faster than nurses can process them while capacity elsewhere goes unused.
+## What makes it an agent
 
-This operational gap matters in African health systems, where health workers are constrained and unevenly distributed. WHO estimates that East Africa had only 34% of the health workforce it needed in 2024. Kenyan hospital research has also linked staff shortages and stretched capacity with delayed or ineffective triage.
+The agent plans a bounded workflow, calls reusable MCP tools, validates tool results, asks follow-up questions when needed, retries safe reads, and hands off when uncertain. Its own MCP server has three tools: read appointment slots, score and save a pending route proposal, and commit a clinician-approved decision. Tool inputs, outputs, timestamps and approval identity are logged.
 
-## What Mzima does
-
-Mzima monitors operational signals such as:
-
-- Patient arrival rates and queue length
-- Waiting time and time to first assessment
-- Triage-station status and service times
-- Staff availability
-- Historical arrival patterns
-
-An AI planning agent uses these signals to forecast near-term demand, identify approaching bottlenecks, evaluate operational options, and recommend an action to the shift lead. Example recommendations include:
-
-- Opening an available triage station before an expected surge
-- Reallocating authorised staff between stations
-- Balancing arrivals across available assessment points
-- Staggering staff breaks
-- Escalating when time to first assessment is rising
-
-The goal is to use existing staff and capacity more intelligently so fewer patients spend unnecessary time waiting for their first assessment.
-
-## Human control and clinical boundaries
-
-Mzima is an operational support tool. It does **not** diagnose, prescribe, score clinical urgency, or decide who gets seen. It can recommend and notify, but a nurse or clinician remains responsible for clinical triage and for deciding whether to act on a recommendation.
-
-## Intended users
-
-- Triage nurses
-- Shift leads
-- Outpatient department managers
-
-Patients benefit from a shorter and more predictable wait to first assessment.
-
-## Proposed technology stack
-
-The repository does not yet contain application code or framework configuration, so the following is a proposed starting stack rather than a description of implemented technology:
-
-| Area | Suggested technology | Purpose |
-| --- | --- | --- |
-| Web application | Next.js, React, TypeScript | Responsive operations dashboard for shift leads and triage staff |
-| UI styling | Tailwind CSS | Consistent, accessible dashboard components |
-| API | Python, FastAPI | Operational data ingestion and recommendation endpoints |
-| Forecasting and planning | Python, pandas, scikit-learn; rules-based constraints around recommendations | Near-term demand forecasts and transparent operational planning |
-| Data storage | PostgreSQL | Queue, station, staffing, and recommendation records |
-| Background work | Redis and Celery | Scheduled forecasts, event processing, and notifications |
-| Deployment | Docker | Reproducible development and deployment environments |
-
-Clinical safety, privacy, explainability, and reliable operation should guide technology choices. Recommendations should expose their operational basis, preserve a human approval step, and avoid using patient-identifying data unless it is necessary and appropriately protected.
+The full task runs on an open-weight model hosted in-country. Patient data must not leave the country. Any frontier-model comparison uses synthetic data only. ElevenLabs is limited to generic, non-personal audio unless an in-country deployment and data handling are verified; patient speech and personalized appointment details stay local.
 
 ## Project status
 
-This repository currently contains project documentation only. The stack above is a suggested foundation; no application implementation is present yet.
+This repository is currently documentation only. There is no runnable application, MCP server, agent, public demo, or measured evaluation yet. The requirements and intended architecture are captured in [MZIMA_SYSTEM_DESIGN.md](MZIMA_SYSTEM_DESIGN.md) and [ARCHITECTURE.md](ARCHITECTURE.md). [EVALS.md](EVALS.md) is a test plan until an implementation produces real pass/fail results.
 
-## Getting started
+## Intended sub-theme and workflow
 
-There is no application to install or run yet. Once the implementation is added, this section should document prerequisites, setup, configuration, and development commands.
+**Sub-theme:** responsible agentic AI for access to care and outpatient operations.  
+**Facility:** one participating outpatient facility; selection pending.  
+**Workflow:** patient requests earliest appointment → local agent proposes a sector/priority → named clinician reviews → approved appointment enters the queue.
 
-## License
+## Run
+
+There is no application to run yet. The submission-ready implementation must provide a one-command start with seeded synthetic data and local model instructions.
+
+## Privacy and safety
+
+Do not put real patient information in issues, commits, prompts, demo recordings or third-party tools. Use synthetic data until the facility approves the workflow, hosting, privacy controls and clinical protocol. Clinician approval must be authenticated and auditable.
+
+See [DATA_AND_PRIVACY.md](DATA_AND_PRIVACY.md) for the detailed data inventory, privacy rules, security controls, retention and pilot governance.
+
+## Licence
 
 See [LICENSE](LICENSE).
